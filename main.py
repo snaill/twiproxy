@@ -81,11 +81,13 @@ class MainPage(webapp.RequestHandler):
             if 'oauth_version' in auth_header :
                 logging.debug("auth_header:" + auth_header)
                 auth_parts = auth_header.split(',')
-                user_access_token = self.request.get("oauth_token")
-                user_access_secret = self.request.get("oauth_token")
+                for part in auth_parts :
+                    if 'oauth_token' in part :
+                       	in_part = part.split('=')
+                        user_access_token = in_part[1].strip('"')
+						
                 logging.debug("user_access_token:" + user_access_token)
-                logging.debug("user_access_secret:" + user_access_secret)
-                user_access_token, user_access_secret  = client.get_access_from_db('snaill99', '123456')
+                user_access_token, user_access_secret  = client.get_access_from_db2( user_access_token )
                 protected=True
             else :
                 username = None
