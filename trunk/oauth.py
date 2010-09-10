@@ -203,7 +203,7 @@ class OAuthClient():
             access_token = None
             access_secret = None
         else:
-            result.decrypt(password)
+            #result.decrypt(password)
             if result.token[:3]=='###' and result.secret[:3]=='###':
                 access_token = result.token[3:]
                 access_secret = result.secret[3:]
@@ -212,6 +212,28 @@ class OAuthClient():
                 access_secret = None
         return access_token, access_secret
 
+    def get_access_from_db2(self, user_access_token):
+        result = AuthTokenModel.gql("""
+            WHERE
+                service = :1 AND
+                token = :2
+            LIMIT
+                1
+        """, self.service_name, '###' + user_access_token).get()
+        logging.debug(result)
+        if not result:
+            access_token = None
+            access_secret = None
+        else:
+        #    result.decrypt(password)
+            if result.token[:3]=='###' and result.secret[:3]=='###':
+                access_token = result.token[3:]
+                access_secret = result.secret[3:]
+            else:
+                access_token = None
+                access_secret = None
+        return access_token, access_secret
+		
     def save_user_info_into_db(self, username, password, token, secret):
         service = self.service_name
         res = AuthTokenModel.all().filter(
@@ -226,7 +248,7 @@ class OAuthClient():
                          username=username.lower(),
                          secret=secret,
                          token=token)
-        auth.encrypt(password)
+        #auth.encrypt(password)
         auth.put()
     
     def _get_auth_token(self):
