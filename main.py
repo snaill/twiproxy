@@ -57,12 +57,15 @@ class MainPage(webapp.RequestHandler):
         (scm, netloc, path, params, query, _) = urlparse.urlparse(orig_url)
         
         path_parts = path.split('/')
-        if path_parts[1] == 'api' or path_parts[1] == 'search':
+        if path_parts[1] == 'api' or path_parts[1] == 'search' or path_parts[1] == 'basic' :
             sub_head = path_parts[1]
             path_parts = path_parts[2:]
             path_parts.insert(0,'')
             new_path = '/'.join(path_parts).replace('//','/')
-            new_netloc = sub_head + '.twitter.com'
+            if 	sub_head == 'basic' :
+                new_netloc = 'twitter.com'			
+            else :			
+                new_netloc = sub_head + '.twitter.com'
         else:
             new_path = path
             new_netloc = 'twitter.com'
@@ -145,6 +148,8 @@ class MainPage(webapp.RequestHandler):
                 if is_hop_by_hop(res_name) is False and res_name!='status':
                     self.response.headers.add_header(res_name, res_value)
             self.response.out.write(data.content)
+            logging.debug( data.headers )	
+            logging.debug( 'data.content:' + data.content )				
 
     def post(self):
         self.do_proxy('POST')
@@ -251,6 +256,7 @@ class OauthPage(webapp.RequestHandler):
 
 def main():
     application = webapp.WSGIApplication( [
+	    (r'/basic/.*', MainPage),
         (r'/api/oauth/(.*)', OauthPage),
         (r'/api/.*', MainPage),
         (r'/search/oauth/(.*)', OauthPage),
