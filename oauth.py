@@ -308,13 +308,13 @@ class TwitterClient(OAuthClient):
                 "twitter",
                 consumer_key,
                 consumer_secret,
-                "https://api.twitter.com/oauth/request_token",
-                "https://api.twitter.com/oauth/access_token",
+                "https://twitter.com/oauth/request_token",
+                "https://twitter.com/oauth/access_token",
                 callback_url)
 
     def get_authorization_url(self):
         """Get Authorization URL."""
 
         token = self._get_auth_token()
-        return "https://api.twitter.com/oauth/authorize?oauth_token=%s" % token
+        return "https://twitter.com/oauth/authorize?oauth_token=%s" % token
 
